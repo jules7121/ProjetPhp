@@ -3,13 +3,13 @@ require_once 'helpers/Psr4AutoloaderClass.php';
 
 $loader = new Helpers\Psr4AutoloaderClass();
 $loader->register();
-$loader->addNamespace('\Helpers', '/helpers');
-$loader->addNamespace('\League\Plates', 'vendor/plates/src');
 
-use League\Plates\Engine;
+// namespaces -> dossiers (relatifs à index.php)
+$loader->addNamespace('Helpers', 'helpers');
+$loader->addNamespace('League\Plates', 'vendor/plates/src');
+$loader->addNamespace('Controllers', 'controllers');
 
-$templates = new Engine( '/Views');
+use Controllers\MainController;
 
-echo $templates->render('home', [
-    'gameName' => 'Genshin Impact'
-]);
+$controller = new MainController();
+$controller->index();
