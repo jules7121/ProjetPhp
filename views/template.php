@@ -7,9 +7,26 @@
     <title><?= $this->e($title) ?></title>
 </head>
 <body>
+<main id="contenu">
+
+    <?php if (!empty($message)) : ?>
+        <div class="alert">
+            <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?>
+        </div>
+    <?php endif; ?>
 
 <header>
-    <!-- plus tard tu mettras le menu ici -->
+    
+    <nav>
+        <ul>
+            <li><a href="index.php">Accueil</a></li>
+            <li><a href="index.php?action=add-perso">Ajouter un personnage</a></li>
+            <li><a href="index.php?action=add-perso-element">Ajouter un élément</a></li>
+            <li><a href="index.php?action=logs">Logs</a></li>
+            <li><a href="index.php?action=login">Login</a></li>
+        </ul>
+    </nav>
+
 </header>
 
 <main id="contenu">
@@ -21,3 +38,4 @@
 
 </body>
 </html>
+
