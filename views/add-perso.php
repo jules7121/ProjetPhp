@@ -1,10 +1,12 @@
 <?php
-/** @var ?string $message */
+/** @var mixed $message */
 /** @var ?\Models\Personnage $perso */
 /** @var string $mode */
-$mode = $mode ?? 'create'; // 'create' ou 'edit'
+/** @var \Models\Element[] $elements */
+/** @var \Models\UnitClass[] $unitclasses */
+/** @var \Models\Origin[] $origins */
 
-// Titre et action selon le mode
+$mode = $mode ?? 'create';
 $isEdit = $mode === 'edit';
 
 $titlePage = $isEdit ? 'Modifier un personnage' : 'Ajouter un personnage';
@@ -12,12 +14,7 @@ $actionUrl = $isEdit
     ? 'index.php?action=edit-perso'
     : 'index.php?action=add-perso';
 
-$buttonText = $isEdit ? 'Enregistrer les modifications' : 'Ajouter le personnage';
-
-// valeurs par défaut si on a un personnage (mode edit)
-$val = fn($getter, $default = '') => isset($perso) ? htmlspecialchars($perso->$getter(), ENT_QUOTES, 'UTF-8') : $default;
 ?>
-
 <?php $this->layout('template', ['title' => $titlePage, 'message' => $message]); ?>
 
 <h1><?= $titlePage ?></h1>
@@ -26,61 +23,83 @@ $val = fn($getter, $default = '') => isset($perso) ? htmlspecialchars($perso->$g
     <form action="<?= $actionUrl ?>" method="post" class="form-grid">
 
         <?php if ($isEdit && isset($perso)) : ?>
-            <!-- id caché pour l'update -->
-            <input type="hidden" name="idPerso" value="<?= $val('getId') ?>">
+            <input type="hidden" name="idPerso" value="<?= htmlspecialchars($perso->getId()) ?>">
         <?php endif; ?>
 
+        <!-- NOM -->
         <div class="form-field">
             <label for="perso-nom">Nom *</label>
             <input type="text" id="perso-nom" name="perso-nom"
-                   required
-                   value="<?= $val('getName') ?>">
+                required
+                value="<?= isset($perso) ? htmlspecialchars($perso->getName()) : '' ?>">
         </div>
 
+        <!-- ÉLÉMENT -->
         <div class="form-field">
             <label for="perso-element">Élément *</label>
-            <input type="text" id="perso-element" name="perso-element"
-                   placeholder="Pyro, Hydro, etc."
-                   required
-                   value="<?= $val('getElement') ?>">
+            <select id="perso-element" name="perso-element" required>
+                <option value="">-- Choisir un élément --</option>
+
+                <?php foreach ($elements as $e): ?>
+                    <option value="<?= $e->getId() ?>"
+                        <?= isset($perso) && $perso->getElementId() === $e->getId() ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($e->getName()) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
+        <!-- CLASSE -->
         <div class="form-field">
             <label for="perso-unitclass">Classe / Arme *</label>
-            <input type="text" id="perso-unitclass" name="perso-unitclass"
-                   placeholder="Épéiste, Arcaniste..."
-                   required
-                   value="<?= $val('getUnitclass') ?>">
+            <select id="perso-unitclass" name="perso-unitclass" required>
+                <option value="">-- Choisir une classe --</option>
+
+                <?php foreach ($unitclasses as $u): ?>
+                    <option value="<?= $u->getId() ?>"
+                        <?= isset($perso) && $perso->getUnitclassId() === $u->getId() ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($u->getName()) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
+        <!-- RARETÉ -->
         <div class="form-field">
             <label for="perso-rarity">Rareté (4, 5...) *</label>
             <input type="number" id="perso-rarity" name="perso-rarity"
-                   min="1" max="5" step="1"
-                   required
-                   value="<?= $val('getRarity') ?>">
+                   min="1" max="5" required
+                   value="<?= isset($perso) ? htmlspecialchars($perso->getRarity()) : '' ?>">
         </div>
 
+        <!-- ORIGINE -->
         <div class="form-field">
             <label for="perso-origin">Origine</label>
-            <input type="text" id="perso-origin" name="perso-origin"
-                   placeholder="Mondstadt, Liyue..."
-                   value="<?= $val('getOrigin') ?>">
+            <select id="perso-origin" name="perso-origin">
+                <option value="">-- Aucune / Inconnue --</option>
+
+                <?php foreach ($origins as $o): ?>
+                    <option value="<?= $o->getId() ?>"
+                        <?= isset($perso) && $perso->getOriginId() === $o->getId() ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($o->getName()) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
+        <!-- IMAGE -->
         <div class="form-field">
             <label for="perso-url-img">URL de l’image *</label>
             <input type="url" id="perso-url-img" name="perso-url-img"
-                   placeholder="https://..."
-                   required
-                   value="<?= $val('getUrlImg') ?>">
+                   required placeholder="https://..."
+                   value="<?= isset($perso) ? htmlspecialchars($perso->getUrlImg()) : '' ?>">
         </div>
 
+        <!-- BOUTONS -->
         <div class="form-actions">
-            <button type="submit" class="btn-primary">
-                <?= $buttonText ?>
-            </button>
-            <a href="index.php" class="btn-secondary">Retour à la liste</a>
+            <button type="submit" class="btn-primary">Valider</button>
+            <a href="index.php" class="btn-secondary">Retour</a>
         </div>
+
     </form>
 </div>

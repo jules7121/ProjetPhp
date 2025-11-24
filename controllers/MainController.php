@@ -4,6 +4,7 @@ namespace Controllers;
 
 use League\Plates\Engine;
 use Models\PersonnageDAO;
+use Helpers\Message;
 
 class MainController
 {
@@ -14,7 +15,12 @@ class MainController
         $this->templates = new Engine(__DIR__ . '/../views');
     }
 
-    public function index(?string $message = null): void
+    /**
+     * Page d’accueil : liste des personnages
+     *
+     * @param mixed $message Peut être null, string ou Helpers\Message
+     */
+    public function index($message = null): void
     {
         $dao = new PersonnageDAO();
 
@@ -26,19 +32,31 @@ class MainController
             'listPersonnage' => $listPersonnage,
             'message'        => $message,
         ]);
-        
     }
 
+    public function logs($message = null): void
+{
+    $service = new \Services\LogService();
 
-    public function logs(): void
-    {
-    echo $this->templates->render('logs');
+    $files = $service->listLogs();
+    $content = null;
+
+    if (isset($_GET['file'])) {
+        $content = $service->read($_GET['file']);
     }
 
-    public function login(): void
-    {
-    echo $this->templates->render('login');
+    echo $this->templates->render('logs', [
+        'message' => $message,
+        'files'   => $files,
+        'content' => $content
+    ]);
 }
 
-    
+
+    public function login($message = null): void
+    {
+        echo $this->templates->render('login', [
+            'message' => $message,
+        ]);
+    }
 }

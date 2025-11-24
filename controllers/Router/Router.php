@@ -12,6 +12,8 @@ use Controllers\Router\Route\RouteLogs;
 use Controllers\Router\Route\RouteLogin;
 use Controllers\Router\Route\RouteEditPerso;
 use Controllers\Router\Route\RouteDelPerso;
+use Controllers\Router\Route\RouteAddUnitClass;
+use Controllers\Router\Route\RouteAddOrigin;
 
 
 
@@ -53,6 +55,10 @@ class Router
     
     $this->routeList['edit-perso']        = new RouteEditPerso($this->ctrlList['perso']);
     $this->routeList['del-perso']         = new RouteDelPerso($this->ctrlList['perso']);
+    $this->routeList['add-unitclass'] = new RouteAddUnitClass($this->ctrlList['perso']);
+    $this->routeList['add-origin'] = new RouteAddOrigin($this->ctrlList['perso']);
+
+
 }
 
 

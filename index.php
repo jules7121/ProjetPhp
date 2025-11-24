@@ -13,6 +13,8 @@ $loader->addNamespace('League\\Plates', 'vendor/plates/src');
 $loader->addNamespace('Controllers', 'controllers');
 $loader->addNamespace('Models', 'models');
 $loader->addNamespace('Config', 'config');
+$loader->addNamespace('Services', 'services');
+
 
 use Controllers\Router\Router;
 
