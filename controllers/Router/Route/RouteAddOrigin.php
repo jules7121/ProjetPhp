@@ -3,10 +3,12 @@
 namespace Controllers\Router\Route;
 
 use Controllers\PersonnageController;
+use Controllers\MainController;
 use Controllers\Router\Route;
 use Models\Origin;
 use Models\OriginDAO;
 use Helpers\Message;
+use Services\AuthService;
 use Exception;
 
 class RouteAddOrigin extends Route
@@ -20,11 +22,25 @@ class RouteAddOrigin extends Route
 
     public function get(array $params = []): void
     {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         $this->controller->displayAddOrigin();
     }
 
     public function post(array $params = []): void
     {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         try {
             $name   = $this->getParam($params, 'origin-name', false);
             $imgUrl = $this->getParam($params, 'origin-img', true);
@@ -37,14 +53,14 @@ class RouteAddOrigin extends Route
             $ok = $dao->createOrigin($origin);
 
             $message = $ok
-                ? new Message("Origine ajoutée avec succès.", Message::COLOR_SUCCESS, "Succès")
-                : new Message("Erreur lors de l’ajout de l’origine.", Message::COLOR_ERROR, "Erreur");
+                ? new Message("Origine ajoutée avec succès.", Message::COLOR_SUCCESS)
+                : new Message("Erreur lors de l’ajout de l’origine.", Message::COLOR_ERROR);
 
             $this->controller->displayAddOrigin($message);
 
         } catch (Exception $e) {
             $this->controller->displayAddOrigin(
-                new Message("Erreur : " . $e->getMessage(), Message::COLOR_ERROR, "Erreur")
+                new Message("Erreur : " . $e->getMessage(), Message::COLOR_ERROR)
             );
         }
     }

@@ -4,9 +4,8 @@ namespace Controllers\Router\Route;
 
 use Controllers\MainController;
 use Controllers\Router\Route;
-use Services\AuthService;
 
-class RouteLogs extends Route
+class RouteAllPerso extends Route
 {
     private MainController $controller;
 
@@ -17,18 +16,13 @@ class RouteLogs extends Route
 
     public function get(array $params = []): void
     {
-        $auth = new AuthService();
-        $msg = $auth->requireLogin();
-        if ($msg !== null) {
-            $this->controller->login($msg);
-            return;
-        }
-
-        $this->controller->logs();
+        // Appelle la nouvelle méthode du MainController
+        $this->controller->allPerso();
     }
 
     public function post(array $params = []): void
     {
+        // Pas de POST spécifique ici, on fait la même chose
         $this->get($params);
     }
 }

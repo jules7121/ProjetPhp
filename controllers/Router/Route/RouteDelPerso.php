@@ -3,8 +3,10 @@
 namespace Controllers\Router\Route;
 
 use Controllers\PersonnageController;
-use Exception;
+use Controllers\MainController;
 use Controllers\Router\Route;
+use Services\AuthService;
+use Exception;
 
 class RouteDelPerso extends Route
 {
@@ -16,19 +18,25 @@ class RouteDelPerso extends Route
     }
 
     public function get(array $params = []): void
-    { 
+    {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         try {
             $idPerso = $this->getParam($params, 'id', false);
             $this->controller->deletePersoAndIndex($idPerso);
+
         } catch (Exception $e) {
-            // Pas d’id dans l’URL → message générique
             $this->controller->deletePersoAndIndex(null);
         }
     }
 
     public function post(array $params = []): void
     {
-        // On ne supprime qu’en GET dans ce TP
         $this->get($params);
     }
 }

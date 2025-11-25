@@ -3,9 +3,10 @@
 namespace Controllers\Router\Route;
 
 use Controllers\PersonnageController;
-use Exception;
+use Controllers\MainController;
 use Controllers\Router\Route;
-
+use Services\AuthService;
+use Exception;
 
 class RouteAddPerso extends Route
 {
@@ -18,14 +19,26 @@ class RouteAddPerso extends Route
 
     public function get(array $params = []): void
     {
-        // Affiche simplement le formulaire vide
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         $this->controller->displayAddPerso();
     }
 
     public function post(array $params = []): void
     {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         try {
-            // On récupère les champs (obligatoires sauf origin)
             $data = [
                 'name'      => $this->getParam($params, 'perso-nom', false),
                 'element'   => $this->getParam($params, 'perso-element', false),
@@ -36,8 +49,8 @@ class RouteAddPerso extends Route
             ];
 
             $this->controller->addPerso($data);
+
         } catch (Exception $e) {
-            // En cas de champ manquant ou vide
             $this->controller->displayAddPerso("Erreur dans le formulaire : " . $e->getMessage());
         }
     }

@@ -16,6 +16,9 @@ $loader->addNamespace('Config', 'config');
 $loader->addNamespace('Services', 'services');
 
 
+
+
+
 use Controllers\Router\Router;
 
 // On délègue tout au routeur

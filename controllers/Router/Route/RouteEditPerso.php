@@ -3,7 +3,9 @@
 namespace Controllers\Router\Route;
 
 use Controllers\PersonnageController;
+use Controllers\MainController;
 use Controllers\Router\Route;
+use Services\AuthService;
 use Exception;
 
 class RouteEditPerso extends Route
@@ -15,26 +17,32 @@ class RouteEditPerso extends Route
         $this->controller = $controller;
     }
 
-    /**
-     * Affiche le formulaire d’édition pré-rempli
-     */
     public function get(array $params = []): void
     {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         try {
-            // On récupère l’id du personnage dans l’URL
             $idPerso = $this->getParam($params, 'id', false);
             $this->controller->displayEditPerso($idPerso);
         } catch (Exception $e) {
-            // Pas d’id → on renvoie simplement sur le formulaire d’ajout
-            $this->controller->displayAddPerso("Aucun identifiant de personnage pour la modification.");
+            $this->controller->displayAddPerso("Aucun identifiant pour la modification.");
         }
     }
 
-    /**
-     * Traite la soumission du formulaire d’édition
-     */
     public function post(array $params = []): void
     {
+        $auth = new AuthService();
+        $msg = $auth->requireLogin();
+        if ($msg !== null) {
+            (new MainController())->login($msg);
+            return;
+        }
+
         try {
             $data = [
                 'idPerso'   => $this->getParam($params, 'idPerso', false),
@@ -47,16 +55,14 @@ class RouteEditPerso extends Route
             ];
 
             $this->controller->editPerso($data);
+
         } catch (Exception $e) {
-            // Si erreur dans les champs, on essaie de réafficher le form d’édition
             $idPerso = $params['idPerso'] ?? null;
 
-            $message = "Erreur dans le formulaire : " . $e->getMessage();
-
-            if ($idPerso !== null) {
-                $this->controller->displayEditPerso($idPerso, $message);
+            if ($idPerso) {
+                $this->controller->displayEditPerso($idPerso, "Erreur : " . $e->getMessage());
             } else {
-                $this->controller->displayAddPerso($message);
+                $this->controller->displayAddPerso("Erreur : " . $e->getMessage());
             }
         }
     }

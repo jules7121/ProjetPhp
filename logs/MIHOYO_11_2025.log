@@ -1,2 +1,5 @@
 [24/11/2025 08:24:01] [DELETE] Personnage 'dadad' supprimé (ID=69233e9240fff1.52415590)
 [24/11/2025 08:25:38] [DELETE] Échec suppression personnage (ID=69233e9240fff1.52415590)
+[24/11/2025 12:53:10] [UPDATE] Personnage 'hatim' mis à jour (ID=69233ee3262c94.78465627)
+[24/11/2025 12:54:14] [UPDATE] Échec update personnage 'hatim' (ID=69233ee3262c94.78465627)
+[25/11/2025 13:54:02] [UPDATE] Personnage 'hatim2111' mis à jour (ID=69233ee3262c94.78465627)

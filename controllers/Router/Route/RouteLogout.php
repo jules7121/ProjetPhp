@@ -5,26 +5,25 @@ namespace Controllers\Router\Route;
 use Controllers\MainController;
 use Controllers\Router\Route;
 use Services\AuthService;
+use Helpers\Message;
 
-class RouteLogs extends Route
+class RouteLogout extends Route
 {
     private MainController $controller;
+    private AuthService $auth;
 
     public function __construct(MainController $controller)
     {
         $this->controller = $controller;
+        $this->auth = new AuthService();
     }
 
     public function get(array $params = []): void
     {
-        $auth = new AuthService();
-        $msg = $auth->requireLogin();
-        if ($msg !== null) {
-            $this->controller->login($msg);
-            return;
-        }
-
-        $this->controller->logs();
+        $this->auth->logout();
+        $this->controller->login(
+            new Message("Déconnecté.", Message::COLOR_INFO)
+        );
     }
 
     public function post(array $params = []): void

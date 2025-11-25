@@ -6,10 +6,7 @@
 
     <title><?= $this->e($title) ?></title>
 
-    <!-- Polices futuristes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-
-    <!-- CSS principal -->
     <link rel="stylesheet" href="public/css/main.css"/>
 </head>
 <body>
@@ -18,12 +15,23 @@
     <nav>
         <ul>
             <li><a href="index.php">Accueil</a></li>
-            <li><a href="index.php?action=add-perso">Ajouter un personnage</a></li>
-            <li><a href="index.php?action=add-perso-element">Ajouter un élément</a></li>
-            <li><a href="index.php?action=add-unitclass">Ajouter une classe</a></li>
-            <li><a href="index.php?action=add-origin">Ajouter une origine</a></li>
-            <li><a href="index.php?action=logs">Logs</a></li>
-            <li><a href="index.php?action=login">Login</a></li>
+            
+            <?php if (!empty($_SESSION['user_id'])): ?>
+                <li><a href="index.php?action=all-perso">Tous les personnages</a></li>
+                <li><a href="index.php?action=add-perso">Ajouter un personnage</a></li>
+                <li><a href="index.php?action=add-perso-element">Ajouter un élément</a></li>
+                <li><a href="index.php?action=add-unitclass">Ajouter une classe</a></li>
+                <li><a href="index.php?action=add-origin">Ajouter une origine</a></li>
+                <li><a href="index.php?action=logs">Logs</a></li>
+
+                <li style="color:#ff335c; font-weight:bold;">
+                    Connecté : <?= htmlspecialchars($_SESSION['username']) ?>
+                </li>
+                <li><a href="index.php?action=logout">Logout</a></li>
+
+            <?php else: ?>
+                <li><a href="index.php?action=login">Login</a></li>
+            <?php endif; ?>
         </ul>
     </nav>
 </header>
@@ -44,38 +52,7 @@
     <?= $this->section('content') ?>
 </main>
 
-<footer>
-</footer>
-
-<!-- Script pour les icônes dans les <select> (si tu as des URL d'icônes) -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("select").forEach(select => {
-        select.addEventListener("change", function() {
-            const opt = this.selectedOptions[0];
-            if (opt && opt.dataset.icon) {
-                this.style.backgroundImage = `url('${opt.dataset.icon}')`;
-                this.style.backgroundRepeat = "no-repeat";
-                this.style.backgroundSize   = "24px 24px";
-                this.style.backgroundPosition = "8px center";
-                this.style.paddingLeft = "40px";
-            } else {
-                this.style.backgroundImage = "none";
-                this.style.paddingLeft = "12px";
-            }
-        });
-
-        const opt = select.selectedOptions[0];
-        if (opt && opt.dataset.icon) {
-            select.style.backgroundImage = `url('${opt.dataset.icon}')`;
-            select.style.backgroundRepeat = "no-repeat";
-            select.style.backgroundSize   = "24px 24px";
-            select.style.backgroundPosition = "8px center";
-            select.style.paddingLeft = "40px";
-        }
-    });
-});
-</script>
+<footer></footer>
 
 </body>
 </html>

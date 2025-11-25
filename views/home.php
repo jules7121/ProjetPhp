@@ -1,6 +1,6 @@
 <?php $this->layout('template', ['title' => 'TP Mihoyo']); ?>
 
-<h1>Collection <?= $this->e($gameName) ?></h1>
+<h1>Collection <?= $this->e($pageTitle) ?></h1>
 
 <?php if (!empty($listPersonnage)) : ?>
 
@@ -19,6 +19,17 @@
 
     <tbody>
     <?php foreach ($listPersonnage as $perso) : ?>
+        <?php
+        // Vérifie si l'utilisateur est connecté
+        $isLogged = isset($_SESSION['user_id']);
+        
+        // On regarde si le perso est dans la collection si on a la collection
+        $inCollection = false;
+        if (isset($collection)) {
+            $inCollection = in_array($perso->getId(), $collection);
+        }
+        if (!$inCollection && (isset($onlyCollection) && $onlyCollection)) continue;
+        ?>
         <tr>
 
             <!-- IMAGE -->
@@ -85,19 +96,51 @@
             </td>
 
             <!-- OPTIONS : BOUTONS -->
-            <td class="perso-options">
+                <td class="perso-options">
 
-                <a href="index.php?action=edit-perso&id=<?= $this->e($perso->getId()) ?>"
-                   class="btn-option btn-edit">
-                    Modifier
-                </a>
+        <!-- Boutons admin (edit/delete) -->
+        <a href="index.php?action=edit-perso&id=<?= $this->e($perso->getId()) ?>"
+        class="btn-option btn-edit">
+            Modifier
+        </a>
 
-                <a href="index.php?action=del-perso&id=<?= $this->e($perso->getId()) ?>"
-                   class="btn-option btn-delete">
-                    Supprimer
-                </a>
+        <a href="index.php?action=del-perso&id=<?= $this->e($perso->getId()) ?>"
+        class="btn-option btn-delete">
+            Supprimer
+        </a>
 
-            </td>
+        <!-- Boutons collection -->
+        <?php if (!$isLogged): ?>
+
+            <a href="index.php?action=login"
+            class="btn-option btn-secondary"
+            style="margin-left:10px;">
+                Se connecter
+            </a>
+
+        <?php else: ?>
+
+        <?php if ($inCollection): ?>
+            <!-- Bouton - (retirer) -->
+            <a href="index.php?action=remove-collection&id=<?= $perso->getId() ?>"
+               class="btn-option btn-delete"
+               style="background:rgba(255,0,50,0.45);">
+                – Retirer
+            </a>
+        <?php else: ?>
+            <!-- Bouton + (ajouter) -->
+            <a href="index.php?action=add-collection&id=<?= $perso->getId() ?>"
+               class="btn-option btn-edit"
+               style="background:rgba(0,255,100,0.20);color:#00ff73;">
+                + Ajouter
+            </a>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+</td>
+
+
         </tr>
     <?php endforeach; ?>
     </tbody>
