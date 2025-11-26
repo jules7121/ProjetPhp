@@ -48,7 +48,7 @@ class MainController
         echo $this->templates->render('home', [
             'listPersonnage' => $listPersonnage,
             'message'        => $message,
-            'pageTitle'      => 'Tous les personnages - Genshin Impact',
+            'pageTitle'      => 'Collection Genshin Impact',
         ]);
     }
 
@@ -73,7 +73,7 @@ class MainController
                 'listPersonnage' => $listPersonnage,
                 'collection'     => $collection,
                 'message'        => $message,
-                'pageTitle'      => 'Collection Genshin Impact',
+                'pageTitle'      => 'Tous les personnages - Genshin Impact',
             ]);
             return;
         }

@@ -1,6 +1,6 @@
 <?php $this->layout('template', ['title' => 'TP Mihoyo']); ?>
 
-<h1>Collection <?= $this->e($pageTitle) ?></h1>
+<h1><?= $this->e($pageTitle) ?></h1>
 
 <?php if (!empty($listPersonnage)) : ?>
 
