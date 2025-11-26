@@ -17,33 +17,53 @@ class RouteEditPerso extends Route
         $this->controller = $controller;
     }
 
+    /**
+     * Affiche le formulaire de modification d’un personnage.
+     *
+     * @param array $params Paramètres GET (doit contenir 'id')
+     */
     public function get(array $params = []): void
     {
         $auth = new AuthService();
-        $msg = $auth->requireLogin();
+        $msg  = $auth->requireLogin();
+
         if ($msg !== null) {
             (new MainController())->login($msg);
             return;
         }
 
         try {
+            // Récupère l’ID du personnage
             $idPerso = $this->getParam($params, 'id', false);
+
+            // Affiche le formulaire d’édition
             $this->controller->displayEditPerso($idPerso);
+
         } catch (Exception $e) {
-            $this->controller->displayAddPerso("Aucun identifiant pour la modification.");
+            // En cas d'ID manquant
+            $this->controller->displayAddPerso(
+                "Aucun identifiant pour la modification."
+            );
         }
     }
 
+    /**
+     * Traite la modification d’un personnage via POST.
+     *
+     * @param array $params Données du formulaire POST
+     */
     public function post(array $params = []): void
     {
         $auth = new AuthService();
-        $msg = $auth->requireLogin();
+        $msg  = $auth->requireLogin();
+
         if ($msg !== null) {
             (new MainController())->login($msg);
             return;
         }
 
         try {
+            // Récupération des valeurs envoyées par le formulaire
             $data = [
                 'idPerso'   => $this->getParam($params, 'idPerso', false),
                 'name'      => $this->getParam($params, 'perso-nom', false),
@@ -54,15 +74,22 @@ class RouteEditPerso extends Route
                 'url_img'   => $this->getParam($params, 'perso-url-img', false),
             ];
 
+            // Applique la modification via le contrôleur
             $this->controller->editPerso($data);
 
         } catch (Exception $e) {
+            // Cas d'erreur : on tente d'afficher la bonne vue
             $idPerso = $params['idPerso'] ?? null;
 
             if ($idPerso) {
-                $this->controller->displayEditPerso($idPerso, "Erreur : " . $e->getMessage());
+                $this->controller->displayEditPerso(
+                    $idPerso,
+                    "Erreur : " . $e->getMessage()
+                );
             } else {
-                $this->controller->displayAddPerso("Erreur : " . $e->getMessage());
+                $this->controller->displayAddPerso(
+                    "Erreur : " . $e->getMessage()
+                );
             }
         }
     }

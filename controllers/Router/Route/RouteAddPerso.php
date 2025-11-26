@@ -17,10 +17,16 @@ class RouteAddPerso extends Route
         $this->controller = $controller;
     }
 
+    /**
+     * Affiche le formulaire d’ajout de personnage.
+     *
+     * @param array $params Paramètres GET
+     */
     public function get(array $params = []): void
     {
         $auth = new AuthService();
-        $msg = $auth->requireLogin();
+        $msg  = $auth->requireLogin();
+
         if ($msg !== null) {
             (new MainController())->login($msg);
             return;
@@ -29,16 +35,23 @@ class RouteAddPerso extends Route
         $this->controller->displayAddPerso();
     }
 
+    /**
+     * Traite les données POST du formulaire et ajoute un nouveau personnage.
+     *
+     * @param array $params Données envoyées via le formulaire
+     */
     public function post(array $params = []): void
     {
         $auth = new AuthService();
-        $msg = $auth->requireLogin();
+        $msg  = $auth->requireLogin();
+
         if ($msg !== null) {
             (new MainController())->login($msg);
             return;
         }
 
         try {
+            // Données du formulaire récupérées et validées
             $data = [
                 'name'      => $this->getParam($params, 'perso-nom', false),
                 'element'   => $this->getParam($params, 'perso-element', false),
@@ -51,7 +64,9 @@ class RouteAddPerso extends Route
             $this->controller->addPerso($data);
 
         } catch (Exception $e) {
-            $this->controller->displayAddPerso("Erreur dans le formulaire : " . $e->getMessage());
+            $this->controller->displayAddPerso(
+                "Erreur dans le formulaire : " . $e->getMessage()
+            );
         }
     }
 }

@@ -14,15 +14,23 @@ class RouteAllPerso extends Route
         $this->controller = $controller;
     }
 
+    /**
+     * Affiche la liste de tous les personnages.
+     *
+     * @param array $params Paramètres GET (non utilisés ici)
+     */
     public function get(array $params = []): void
     {
-        // Appelle la nouvelle méthode du MainController
         $this->controller->allPerso();
     }
 
+    /**
+     * Pour un POST, on réutilise simplement le même comportement que GET.
+     *
+     * @param array $params Paramètres POST
+     */
     public function post(array $params = []): void
     {
-        // Pas de POST spécifique ici, on fait la même chose
         $this->get($params);
     }
 }

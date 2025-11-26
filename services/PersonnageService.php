@@ -8,15 +8,6 @@ use Models\ElementDAO;
 use Models\OriginDAO;
 use Models\UnitClassDAO;
 
-/**
- * Service chargé de centraliser la logique métier liée aux personnages.
- * Sert d'intermédiaire entre les contrôleurs et les DAO.
- *
- * Rôle :
- *  - Coordonner les DAO
- *  - Fournir des personnages COMPLETS (avec attributs hydratés)
- *  - Simplifier les appels CRUD effectués par les contrôleurs
- */
 class PersonnageService
 {
     private PersonnageDAO $persoDAO;

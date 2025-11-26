@@ -6,7 +6,7 @@ $loader = new Helpers\Psr4AutoloaderClass();
 $loader->register();
 
 /**
- * Namespaces → dossiers (relatifs à index.php)
+ * Namespaces -> dossiers (relatifs à index.php)
  */
 $loader->addNamespace('Helpers', 'helpers');
 $loader->addNamespace('League\\Plates', 'vendor/plates/src');

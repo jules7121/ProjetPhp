@@ -8,6 +8,7 @@ class LogService
 
     public function __construct()
     {
+        // Dossier contenant les fichiers journaux
         $this->folder = __DIR__ . '/../logs/';
 
         if (!is_dir($this->folder)) {
@@ -16,7 +17,16 @@ class LogService
     }
 
     /**
-     * Ajoute une entrée dans le fichier log du mois
+     * Ajoute une entrée dans le fichier log du mois courant.
+     *
+     * Format du nom de fichier :
+     *   MIHOYO_mm_YYYY.log
+     *
+     * Format d'une ligne :
+     *   [JJ/MM/YYYY HH:MM:SS] [ACTION] message
+     *
+     * @param string $action  Action à loguer (CREATE, UPDATE, DELETE, LOGIN…)
+     * @param string $message Message associé
      */
     public function write(string $action, string $message): void
     {
@@ -29,18 +39,24 @@ class LogService
     }
 
     /**
-     * Liste les fichiers de logs
+     * Retourne la liste des fichiers logs disponibles.
+     *
+     * @return array Liste des fichiers *.log dans le dossier /logs
      */
     public function listLogs(): array
     {
         $files = scandir($this->folder);
+
         return array_values(array_filter($files, function ($f) {
             return $f !== '.' && $f !== '..' && str_ends_with($f, '.log');
         }));
     }
 
     /**
-     * Lit le contenu d’un fichier log
+     * Lit le contenu d'un fichier log donné.
+     *
+     * @param string $filename Nom du fichier log
+     * @return string Contenu du fichier, ou message d'erreur si introuvable
      */
     public function read(string $filename): string
     {

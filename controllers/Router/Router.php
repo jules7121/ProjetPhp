@@ -19,21 +19,24 @@ use Controllers\Router\Route\RouteAddCollection;
 use Controllers\Router\Route\RouteRemoveCollection;
 use Controllers\Router\Route\RouteAllPerso;
 
-
-
 use Services\AuthService;
 use Helpers\Message;
 
+
 class Router
 {
-    /** @var array<string, Route> */
+    
     private array $routeList = [];
 
-    /** @var array<string, object> */
     private array $ctrlList  = [];
 
     private string $actionKey;
 
+    /**
+     * Initialise le router.
+     *
+     * @param string $name_of_action_key Nom de la variable GET indiquant l'action
+     */
     public function __construct(string $name_of_action_key = 'action')
     {
         $this->actionKey = $name_of_action_key;
@@ -48,6 +51,7 @@ class Router
         $this->ctrlList['perso'] = new PersonnageController();
     }
 
+    
     private function createRouteList(): void
     {
         $this->routeList['index']             = new RouteIndex($this->ctrlList['main']);
@@ -65,16 +69,21 @@ class Router
         $this->routeList['remove-collection'] = new RouteRemoveCollection($this->ctrlList['main']);
     }
 
+    /**
+     * Détermine la route à appeler, gère la sécurité,
+     * puis exécute get() ou post() selon la méthode HTTP.
+     *
+     * @param array $get  Tableau $_GET
+     * @param array $post Tableau $_POST
+     */
     public function routing(array $get, array $post): void
     {
+        
         $action = $get[$this->actionKey] ?? 'index';
 
         $route  = $this->routeList[$action] ?? $this->routeList['index'];
         $method = !empty($post) ? 'POST' : 'GET';
 
-        //----------------------------------------------
-        // PROTECTION AUTHENTIFICATION
-        //----------------------------------------------
         $protected = [
             'add-collection',
             'remove-collection',
@@ -87,6 +96,7 @@ class Router
             'logs',
         ];
 
+        
         if (in_array($action, $protected, true)) {
             $auth = new AuthService();
             if (!$auth->isLogged()) {
@@ -100,9 +110,7 @@ class Router
                 return;
             }
         }
-
-        //----------------------------------------------
-
+        
         if ($method === 'POST') {
             $route->action($post, 'POST');
         } else {
