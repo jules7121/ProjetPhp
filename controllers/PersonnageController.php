@@ -8,9 +8,12 @@ use Models\PersonnageDAO;
 use Helpers\Message;
 use Services\PersonnageService;
 
-
-
-
+/**
+ * Contrôleur gérant :
+ *  - L'affichage des formulaires (création / modification)
+ *  - L'appel au service pour créer / modifier / supprimer les personnages
+ *  - Le rendu des vues avec Plates
+ */
 class PersonnageController
 {
     private Engine $templates;
@@ -20,12 +23,14 @@ class PersonnageController
     public function __construct()
     {
         $this->templates      = new Engine(__DIR__ . '/../views');
-        $this->service = new PersonnageService();
+        $this->service        = new PersonnageService();
         $this->mainController = new MainController();
     }
 
     /**
-     * Affiche le formulaire d'ajout de personnage
+     * Affiche le formulaire d'ajout de personnage.
+     *
+     * @param Message|null $message Message facultatif (succès/erreur)
      */
     public function displayAddPerso($message = null): void
     {
@@ -43,7 +48,10 @@ class PersonnageController
     }
 
     /**
-     * Affiche le formulaire d'édition pré-rempli
+     * Affiche le formulaire d'édition d'un personnage pré-rempli.
+     *
+     * @param string      $idPerso  ID du personnage
+     * @param Message|null $message Message facultatif
      */
     public function displayEditPerso(string $idPerso, $message = null): void
     {
@@ -70,15 +78,20 @@ class PersonnageController
         ]);
     }
 
+    /**
+     * Affiche la page d'ajout d'un nouvel élément d'attribut.
+     */
     public function displayAddPersoElement($message = null): void
-{
-    echo $this->templates->render('add-perso-element', [
-        'message' => $message
-    ]);
-}
+    {
+        echo $this->templates->render('add-perso-element', [
+            'message' => $message
+        ]);
+    }
 
     /**
-     * Création d'un personnage (POST)
+     * Création d'un personnage depuis un POST.
+     *
+     * @param array $data Données du formulaire
      */
     public function addPerso(array $data): void
     {
@@ -88,7 +101,6 @@ class PersonnageController
         $perso->setRarity((int)$data['rarity']);
         $perso->setUrlImg($data['url_img']);
 
-        // IDs venant des <select>
         $perso->setElementId((int)$data['element']);
         $perso->setUnitclassId((int)$data['unitclass']);
         $perso->setOriginId($data['origin'] !== '' ? (int)$data['origin'] : null);
@@ -96,22 +108,16 @@ class PersonnageController
         $ok = $this->service->create($perso);
 
         $message = $ok
-            ? new Message(
-                "Personnage créé avec succès.",
-                Message::COLOR_SUCCESS,
-                "Création réussie"
-            )
-            : new Message(
-                "Erreur lors de la création du personnage.",
-                Message::COLOR_ERROR,
-                "Erreur de création"
-            );
+            ? new Message("Personnage créé avec succès.", Message::COLOR_SUCCESS, "Création réussie")
+            : new Message("Erreur lors de la création du personnage.", Message::COLOR_ERROR, "Erreur de création");
 
         $this->mainController->index($message);
     }
 
     /**
-     * Mise à jour d'un personnage existant (POST)
+     * Mise à jour d'un personnage depuis un POST.
+     *
+     * @param array $data Données du formulaire
      */
     public function editPerso(array $data): void
     {
@@ -138,20 +144,17 @@ class PersonnageController
         $ok = $this->service->update($perso);
 
         $message = $ok
-            ? new Message(
-                "Personnage modifié avec succès.",
-                Message::COLOR_SUCCESS,
-                "Modification réussie"
-            )
-            : new Message(
-                "Aucune modification effectuée (vérifiez les données).",
-                Message::COLOR_INFO,
-                "Information"
-            );
+            ? new Message("Personnage modifié avec succès.", Message::COLOR_SUCCESS, "Modification réussie")
+            : new Message("Aucune modification effectuée.", Message::COLOR_INFO, "Information");
 
         $this->mainController->index($message);
     }
 
+    /**
+     * Supprime un personnage puis retourne à l'index avec un message.
+     *
+     * @param string|null $idPerso ID du personnage ou null
+     */
     public function deletePersoAndIndex(?string $idPerso = null): void
     {
         if ($idPerso === null) {
@@ -167,35 +170,29 @@ class PersonnageController
         $ok = $this->service->delete($idPerso);
 
         $message = $ok
-            ? new Message(
-                "Personnage supprimé avec succès.",
-                Message::COLOR_SUCCESS,
-                "Suppression réussie"
-            )
-            : new Message(
-                "Aucun personnage supprimé (id introuvable ?).",
-                Message::COLOR_ERROR,
-                "Erreur de suppression"
-            );
+            ? new Message("Personnage supprimé avec succès.", Message::COLOR_SUCCESS, "Suppression réussie")
+            : new Message("Aucun personnage supprimé (id introuvable ?).", Message::COLOR_ERROR, "Erreur de suppression");
 
         $this->mainController->index($message);
     }
 
+    /**
+     * Affiche le formulaire d'ajout de classe (UnitClass).
+     */
     public function displayAddUnitClass($message = null): void
-{
-    echo $this->templates->render('add-unitclass', [
-        'message' => $message
-    ]);
-}
+    {
+        echo $this->templates->render('add-unitclass', [
+            'message' => $message
+        ]);
+    }
 
+    /**
+     * Affiche le formulaire d'ajout d'origine.
+     */
     public function displayAddOrigin($message = null): void
-{
-    echo $this->templates->render('add-origin', [
-        'message' => $message
-    ]);
-}
-
-
-
-    
+    {
+        echo $this->templates->render('add-origin', [
+            'message' => $message
+        ]);
+    }
 }

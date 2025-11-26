@@ -4,15 +4,26 @@ namespace Models;
 
 use PDO;
 
+/**
+ * DAO chargé de gérer les opérations CRUD liées aux classes/unités
+ * (ex : Sword, Mage, Destruction, Harmony...).
+ * Correspond à la table UNITCLASS.
+ */
 class UnitClassDAO extends BasePDODAO
 {
+    /**
+     * Crée une nouvelle classe/unité en base.
+     *
+     * @param UnitClass $u
+     * @return bool Succès ou échec de l'insertion
+     */
     public function createUnitClass(UnitClass $u): bool
     {
         $sql = "INSERT INTO unitclass (name, urlImg)
                 VALUES (:name, :urlImg)";
 
         $params = [
-            ':name' => $u->getName(),
+            ':name'   => $u->getName(),
             ':urlImg' => $u->getUrlImg()
         ];
 
@@ -21,12 +32,14 @@ class UnitClassDAO extends BasePDODAO
     }
 
     /**
+     * Retourne toutes les classes triées par nom.
+     *
      * @return UnitClass[]
      */
     public function getAll(): array
     {
         $sql = "SELECT * FROM unitclass ORDER BY name ASC";
-        $stmt = $this->execRequest($sql);
+        $stmt  = $this->execRequest($sql);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $list = [];
@@ -42,9 +55,15 @@ class UnitClassDAO extends BasePDODAO
         return $list;
     }
 
+    /**
+     * Récupère une classe via son ID.
+     *
+     * @param int $id
+     * @return UnitClass|null Retourne null si non trouvée
+     */
     public function getById(int $id): ?UnitClass
     {
-        $sql = "SELECT * FROM unitclass WHERE id = ?";
+        $sql  = "SELECT * FROM unitclass WHERE id = ?";
         $stmt = $this->execRequest($sql, [$id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

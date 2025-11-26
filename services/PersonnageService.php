@@ -8,6 +8,15 @@ use Models\ElementDAO;
 use Models\OriginDAO;
 use Models\UnitClassDAO;
 
+/**
+ * Service chargé de centraliser la logique métier liée aux personnages.
+ * Sert d'intermédiaire entre les contrôleurs et les DAO.
+ *
+ * Rôle :
+ *  - Coordonner les DAO
+ *  - Fournir des personnages COMPLETS (avec attributs hydratés)
+ *  - Simplifier les appels CRUD effectués par les contrôleurs
+ */
 class PersonnageService
 {
     private PersonnageDAO $persoDAO;
@@ -24,7 +33,9 @@ class PersonnageService
     }
 
     /**
-     * Retourne un tableau de Personnage COMPLETS (hydration objets incluse)
+     * Retourne tous les personnages COMPLETS.
+     *
+     * @return Personnage[]
      */
     public function getAll(): array
     {
@@ -32,7 +43,10 @@ class PersonnageService
     }
 
     /**
-     * Retourne un personnage COMPLET selon son ID
+     * Retourne un personnage COMPLET via son ID.
+     *
+     * @param string $id
+     * @return Personnage|null
      */
     public function getById(string $id): ?Personnage
     {
@@ -40,7 +54,10 @@ class PersonnageService
     }
 
     /**
-     * Crée un personnage (appel au DAO)
+     * Crée un personnage via le DAO.
+     *
+     * @param Personnage $p
+     * @return bool
      */
     public function create(Personnage $p): bool
     {
@@ -48,7 +65,10 @@ class PersonnageService
     }
 
     /**
-     * Met à jour un personnage
+     * Met à jour un personnage existant.
+     *
+     * @param Personnage $p
+     * @return bool
      */
     public function update(Personnage $p): bool
     {
@@ -56,7 +76,10 @@ class PersonnageService
     }
 
     /**
-     * Supprime un personnage par ID
+     * Supprime un personnage via son ID.
+     *
+     * @param string $id
+     * @return bool
      */
     public function delete(string $id): bool
     {

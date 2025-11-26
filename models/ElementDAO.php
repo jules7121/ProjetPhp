@@ -4,15 +4,25 @@ namespace Models;
 
 use PDO;
 
+/**
+ * DAO chargé de gérer les opérations CRUD pour les éléments.
+ * Correspond à la table ELEMENT.
+ */
 class ElementDAO extends BasePDODAO
 {
+    /**
+     * Insère un nouvel élément en base.
+     *
+     * @param Element $e Élément à créer
+     * @return bool Succès ou échec de l'insertion
+     */
     public function createElement(Element $e): bool
     {
         $sql = "INSERT INTO element (name, urlImg)
                 VALUES (:name, :urlImg)";
 
         $params = [
-            ':name' => $e->getName(),
+            ':name'   => $e->getName(),
             ':urlImg' => $e->getUrlImg()
         ];
 
@@ -21,6 +31,8 @@ class ElementDAO extends BasePDODAO
     }
 
     /**
+     * Retourne tous les éléments triés par nom.
+     *
      * @return Element[]
      */
     public function getAll(): array
@@ -42,6 +54,12 @@ class ElementDAO extends BasePDODAO
         return $list;
     }
 
+    /**
+     * Récupère un élément via son ID.
+     *
+     * @param int $id
+     * @return Element|null Retourne null si non trouvé
+     */
     public function getById(int $id): ?Element
     {
         $sql = "SELECT * FROM element WHERE id = ?";

@@ -2,6 +2,16 @@
 
 namespace Models;
 
+/**
+ * Modèle représentant un utilisateur authentifiable.
+ *
+ * Correspond à la table USERS :
+ *  - id (varchar)
+ *  - username (varchar)
+ *  - hash_pwd (varchar)
+ *
+ * Utilisé par AuthService pour gérer la connexion/destruction de session.
+ */
 class User
 {
     private ?string $id = null;

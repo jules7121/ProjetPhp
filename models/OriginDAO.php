@@ -4,15 +4,25 @@ namespace Models;
 
 use PDO;
 
+/**
+ * DAO chargé de gérer les opérations CRUD liées aux origines des personnages.
+ * Correspond à la table ORIGIN.
+ */
 class OriginDAO extends BasePDODAO
 {
+    /**
+     * Crée une nouvelle origine dans la base.
+     *
+     * @param Origin $origin
+     * @return bool Succès ou échec de l'insertion
+     */
     public function createOrigin(Origin $origin): bool
     {
         $sql = "INSERT INTO origin (name, urlImg)
                 VALUES (:name, :urlImg)";
 
         $params = [
-            ':name' => $origin->getName(),
+            ':name'   => $origin->getName(),
             ':urlImg' => $origin->getUrlImg()
         ];
 
@@ -21,6 +31,8 @@ class OriginDAO extends BasePDODAO
     }
 
     /**
+     * Retourne toutes les origines triées par nom.
+     *
      * @return Origin[]
      */
     public function getAll(): array
@@ -42,6 +54,12 @@ class OriginDAO extends BasePDODAO
         return $list;
     }
 
+    /**
+     * Récupère une origine via son ID.
+     *
+     * @param int $id
+     * @return Origin|null Retourne null si aucune origine trouvée
+     */
     public function getById(int $id): ?Origin
     {
         $sql = "SELECT * FROM origin WHERE id = ?";

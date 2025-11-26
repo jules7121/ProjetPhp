@@ -4,8 +4,22 @@ namespace Models;
 
 use PDO;
 
+/**
+ * DAO responsable de la gestion des utilisateurs.
+ * Permet :
+ *  - la création d’un utilisateur
+ *  - la recherche par username
+ *
+ * Utilisé principalement par AuthService.
+ */
 class UserDAO extends BasePDODAO
 {
+    /**
+     * Insère un nouvel utilisateur dans la base.
+     *
+     * @param User $u
+     * @return bool Succès ou échec de l'insertion
+     */
     public function create(User $u): bool
     {
         $sql = "INSERT INTO users (id, username, hash_pwd)
@@ -21,6 +35,12 @@ class UserDAO extends BasePDODAO
         return $stmt !== false && $stmt->rowCount() === 1;
     }
 
+    /**
+     * Recherche un utilisateur via son username.
+     *
+     * @param string $username
+     * @return User|null Retourne null si aucun utilisateur trouvé
+     */
     public function findByUsername(string $username): ?User
     {
         $sql = "SELECT * FROM users WHERE username = :username LIMIT 1";
@@ -34,6 +54,12 @@ class UserDAO extends BasePDODAO
         return $this->map($row);
     }
 
+    /**
+     * Transforme un tableau associatif SQL en objet User.
+     *
+     * @param array $row
+     * @return User
+     */
     private function map(array $row): User
     {
         $u = new User();
